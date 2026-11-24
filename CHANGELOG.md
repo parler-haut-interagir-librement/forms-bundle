@@ -4,9 +4,33 @@ All notable changes to `phil/forms-bundle` will be documented in this file.
 
 Updates should follow the [Keep a CHANGELOG](https://keepachangelog.com/) principles.
 
+## 0.2.1-alpha - 2026-11-24
+
+### Changed
+
+- The development requirements accept `phil/privacy-bundle` 0.3, the minor version of its main branch and no earlier
+  one, so that the package installs on its own beside that bundle.
+- `EmailNotifier` takes a Mailer `TransportInterface`, the service `mailer.transports`, instead of `MailerInterface`.
+- `symfony/messenger` is in `require-dev`, for the test that routes `SendEmailMessage` to an asynchronous transport.
+- Requires the latest minor of each dependency (`doctrine/orm` 3.8, `doctrine/dbal` 4.6, `twig/twig` 3.31,
+  `phil/spam-protection-bundle` 0.3), and of each development requirement (`doctrine/doctrine-bundle` 3.4,
+  `doctrine/persistence` 4.2, `symfony/http-client-contracts` 3.8, `symfony/stimulus-bundle` 3.8, …).
+
+### Fixed
+
+- `phil/spam-protection-bundle` 0.3 is accepted beside 0.1 and 0.2: the package did not install beside the version
+  published on 2026-11-20.
+
+### Security
+
+- An entry's email no longer goes through `MailerInterface`, which put a `SendEmailMessage` on the bus when the
+  application routed it: the unrendered email, with the entry, its form and every value — a sealed value in clear with
+  `allow_unsealed_sensitive` — in its context, kept by the Messenger transport and its failure transport. The email is
+  rendered and sent in the request, through the Mailer transports.
+
 ## 0.2.0-alpha - 2026-11-18
 
-The next version is 0.2.0-alpha: the keys of the forms, entries and counts of places compare byte by byte on MySQL and
+The keys of the forms, entries and counts of places compare byte by byte on MySQL and
 MariaDB, and the tables can be created on MySQL. See [Upgrading from 0.1](doc/installation.md#upgrading-from-01).
 
 ### Added
@@ -33,8 +57,6 @@ MariaDB, and the tables can be created on MySQL. See [Upgrading from 0.1](doc/in
   for `yes`.
 
 ## 0.1.1-alpha - 2026-11-17
-
-The next version is 0.1.1-alpha.
 
 ### Changed
 
