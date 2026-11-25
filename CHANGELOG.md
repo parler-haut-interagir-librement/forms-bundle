@@ -4,6 +4,12 @@ All notable changes to `phil/forms-bundle` will be documented in this file.
 
 Updates should follow the [Keep a CHANGELOG](https://keepachangelog.com/) principles.
 
+## 0.2.2-alpha - 2026-11-25
+
+### Security
+
+- Requires `twig/twig` 3.31.1 or later, which fixes the advisories of its sandbox published on 2026-11-24.
+
 ## 0.2.1-alpha - 2026-11-24
 
 ### Changed
@@ -23,6 +29,11 @@ Updates should follow the [Keep a CHANGELOG](https://keepachangelog.com/) princi
 
 ### Security
 
+- The digest of an entry's address was the HMAC under `digest_key` itself, `%kernel.secret%` by default, and
+  phil/email-address-bundle kept the same HMAC of the same address as its fingerprint: two tables meant to keep
+  pseudonyms of their own matched by a join. `HmacEmailDigester` derives its key by HKDF-SHA256 under
+  `phil_forms.email_digest` (`HmacEmailDigester::USAGE`). The digests kept change: an entry kept before the update is
+  no longer found by its address, for an export or an erasure, until it is digested again.
 - An entry's email no longer goes through `MailerInterface`, which put a `SendEmailMessage` on the bus when the
   application routed it: the unrendered email, with the entry, its form and every value — a sealed value in clear with
   `allow_unsealed_sensitive` — in its context, kept by the Messenger transport and its failure transport. The email is
